@@ -22,6 +22,7 @@ class ItemClipboard : ItemBase("clipboard") {
 	init {
 		unlocalizedName = registryName.toString()
 		creativeTab = CreativeTabs.MISC
+		setMaxStackSize(1)
 	}
 
 	override fun initItemModel() {
