@@ -1,0 +1,32 @@
+#stack {
+	stack-spacing: 3
+	vertical-layout: top
+	margin-top: 24
+}
+
+.innerStack {
+	orientation: horizontal
+	stack-spacing: 4
+	horizontal-layout: left
+}
+
+text-field {
+	textfield-enabled-color: black
+	textfield-shadow: false
+}
+
+button-page {
+	background-enabled: false
+	vertical-layout: bottom
+	margin-bottom: 23
+}
+
+#prev {
+	horizontal-layout: left
+	margin-left: 36
+}
+
+#next {
+	horizontal-layout: right
+	margin-right: 46
+}

@@ -1,0 +1,16 @@
+[
+	{
+	  "modid": "clipboard",
+	  "name": "Clipboard",
+	  "description": "A simple clipboard for keeping track of your todo list.",
+	  "version": "${version}",
+	  "mcversion": "${mcversion}",
+	  "url": "https://rtfm.shadowfacts.net/clipboard/",
+	  "updateUrl": "",
+	  "authorList": ["Shadowfacts"],
+	  "credits": "",
+	  "logoFile": "",
+	  "screenshots": [],
+	  "dependencies": []
+	}
+]
