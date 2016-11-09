@@ -9,6 +9,8 @@ import net.minecraft.util.EnumActionResult
 import net.minecraft.util.EnumHand
 import net.minecraft.util.ResourceLocation
 import net.minecraft.world.World
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import net.shadowfacts.clipboard.gui.GUIClipboard
 import net.shadowfacts.clipboard.network.PacketUpdateClipboard
 import net.shadowfacts.shadowmc.ShadowMC
@@ -37,6 +39,7 @@ class ItemClipboard : ItemBase("clipboard") {
 		return ActionResult(EnumActionResult.SUCCESS, stack)
 	}
 
+	@SideOnly(Side.CLIENT)
 	private fun openGUI(stack: ItemStack, player: EntityPlayer, hand: EnumHand) {
 		val synchronizer = {
 			Clipboard.network!!.sendToServer(PacketUpdateClipboard(stack, player, hand))
