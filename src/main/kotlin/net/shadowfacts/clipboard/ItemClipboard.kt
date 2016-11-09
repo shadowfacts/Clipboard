@@ -30,12 +30,18 @@ class ItemClipboard : ItemBase("clipboard") {
 	}
 
 	override fun onItemRightClick(stack: ItemStack, world: World, player: EntityPlayer, hand: EnumHand): ActionResult<ItemStack> {
+		if (world.isRemote) {
+			openGUI(stack, player, hand)
+		}
+		player.swingArm(hand)
+		return ActionResult(EnumActionResult.SUCCESS, stack)
+	}
+
+	private fun openGUI(stack: ItemStack, player: EntityPlayer, hand: EnumHand) {
 		val synchronizer = {
 			Clipboard.network!!.sendToServer(PacketUpdateClipboard(stack, player, hand))
 		}
 		Minecraft.getMinecraft().displayGuiScreen(GUIClipboard.create(stack, synchronizer))
-		player.swingArm(hand)
-		return ActionResult(EnumActionResult.SUCCESS, stack)
 	}
 
 }
