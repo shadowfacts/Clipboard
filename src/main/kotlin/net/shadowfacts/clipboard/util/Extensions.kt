@@ -1,8 +1,10 @@
 package net.shadowfacts.clipboard.util
 
+import net.minecraft.entity.item.EntityItem
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
+import net.minecraft.world.World
 import net.minecraftforge.common.util.Constants
 import net.shadowfacts.forgelin.extensions.forEach
 import org.apache.commons.lang3.tuple.MutablePair
@@ -41,4 +43,8 @@ fun ItemStack.getPage(): Int {
 fun ItemStack.setPage(page: Int) {
 	if (!hasTagCompound()) tagCompound = NBTTagCompound()
 	tagCompound!!.setInteger("page", page)
+}
+
+fun EntityItem(world: World, x: Int, y: Int, z: Int, stack: ItemStack): EntityItem {
+	return EntityItem(world, x.toDouble(), y.toDouble(), z.toDouble(), stack)
 }

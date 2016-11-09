@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-	"layer0": "clipboard:items/clipboard"
+	"layer0": "clipboard:clipboard"
   }
 }

@@ -1,0 +1,32 @@
+{
+  "textures": {
+	"front": "clipboard:clipboard"
+  },
+  "elements": [
+	{
+	  "from": [3, 2, 0],
+	  "to": [13, 14, 1],
+	  "faces": {
+		"down": {
+		  "texture": "#side"
+		},
+		"up": {
+		  "texture": "#side"
+		},
+		"east": {
+		  "texture": "#side"
+		},
+		"west": {
+		  "texture": "#side"
+		},
+		"north": {
+		  "texture": "#back",
+		  "cullface": "north"
+		},
+		"south": {
+		  "texture": "#front"
+		}
+	  }
+	}
+  ]
+}

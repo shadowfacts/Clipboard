@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.oredict.ShapelessOreRecipe
+import net.shadowfacts.clipboard.block.BlockClipboard
+import net.shadowfacts.clipboard.block.TileEntityClipboard
 import net.shadowfacts.clipboard.network.HandlerUpdateClipboard
 import net.shadowfacts.clipboard.network.PacketUpdateClipboard
 
@@ -23,10 +25,14 @@ object Clipboard {
 
 //	Content
 	val clipboard = ItemClipboard()
+	val blockClipboard = BlockClipboard()
 
 	@Mod.EventHandler
 	fun preInit(event: FMLPreInitializationEvent) {
 		GameRegistry.register(clipboard)
+		GameRegistry.register(blockClipboard)
+
+		GameRegistry.registerTileEntity(TileEntityClipboard::class.java, "$MOD_ID:clipboard")
 
 		GameRegistry.addRecipe(ShapelessOreRecipe(clipboard, "dyeBlack", "feather", "paper", Blocks.WOODEN_PRESSURE_PLATE))
 
