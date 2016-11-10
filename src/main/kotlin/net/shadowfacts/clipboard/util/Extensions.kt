@@ -7,29 +7,28 @@ import net.minecraft.nbt.NBTTagList
 import net.minecraft.world.World
 import net.minecraftforge.common.util.Constants
 import net.shadowfacts.forgelin.extensions.forEach
-import org.apache.commons.lang3.tuple.MutablePair
 
 /**
  * @author shadowfacts
  */
-fun ItemStack.getTasks(): MutableList<MutablePair<String, Boolean>> {
+fun ItemStack.getTasks(): MutableList<Task> {
 	if (!hasTagCompound()) return mutableListOf()
-	val list = mutableListOf<MutablePair<String, Boolean>>()
+	val list = mutableListOf<Task>()
 	val taglist = tagCompound!!.getTagList("tasks", Constants.NBT.TAG_COMPOUND)
 	taglist.forEach {
 		val tag = it as NBTTagCompound
-		list.add(MutablePair.of(tag.getString("item"), tag.getBoolean("state")))
+		list.add(Task(tag.getString("task"), tag.getBoolean("state")))
 	}
 	return list
 }
 
-fun ItemStack.setTasks(tasks: List<MutablePair<String, Boolean>>) {
+fun ItemStack.setTasks(tasks: List<Task>) {
 	if (!hasTagCompound()) tagCompound = NBTTagCompound()
 	val taglist = NBTTagList()
 	tasks.forEach {
 		val tag = NBTTagCompound()
-		tag.setString("item", it.left)
-		tag.setBoolean("state", it.right)
+		tag.setString("task", it.task)
+		tag.setBoolean("state", it.state)
 		taglist.appendTag(tag)
 	}
 	tagCompound!!.setTag("tasks", taglist)

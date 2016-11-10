@@ -7,10 +7,7 @@ import net.minecraft.util.ResourceLocation
 import net.shadowfacts.clipboard.MOD_ID
 import net.shadowfacts.clipboard.gui.element.UITaskCheckbox
 import net.shadowfacts.clipboard.gui.element.UITaskTextField
-import net.shadowfacts.clipboard.util.getPage
-import net.shadowfacts.clipboard.util.getTasks
-import net.shadowfacts.clipboard.util.setPage
-import net.shadowfacts.clipboard.util.setTasks
+import net.shadowfacts.clipboard.util.*
 import net.shadowfacts.shadowmc.ui.UIDimensions
 import net.shadowfacts.shadowmc.ui.element.button.UIButtonBase
 import net.shadowfacts.shadowmc.ui.element.button.UIImage
@@ -59,24 +56,24 @@ object GUIClipboard {
 				val taskId = clipboard.getPage() * 9 + i
 				val (checkbox, textfield) = items[i]
 				checkbox.id = taskId
-				checkbox.state = if (taskId < tasks.size) tasks[taskId].right else false
+				checkbox.state = if (taskId < tasks.size) tasks[taskId].state else false
 				checkbox.setHandler {
 					if (it.id < tasks.size) {
-						tasks[it.id].right = it.state
+						tasks[it.id].state = it.state
 					} else {
-						tasks.add(MutablePair.of("", it.state))
+						tasks.add(Task("", it.state))
 						it.id = tasks.size - 1
 						textfield.id = it.id
 					}
 					update()
 				}
 				textfield.id = taskId
-				textfield.text = if (taskId < tasks.size) tasks[taskId].left else ""
+				textfield.text = if (taskId < tasks.size) tasks[taskId].task else ""
 				textfield.setHandler {
 					if (it.id < tasks.size) {
-						tasks[it.id].left = it.text
+						tasks[it.id].task = it.text
 					} else {
-						tasks.add(MutablePair.of(it.text, false))
+						tasks.add(Task(it.text, false))
 						it.id = tasks.size - 1
 						checkbox.id = it.id
 					}

@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
 import net.minecraftforge.common.util.Constants
+import net.shadowfacts.clipboard.util.Task
 import net.shadowfacts.clipboard.util.getTasks
 import net.shadowfacts.forgelin.extensions.forEach
 import net.shadowfacts.shadowmc.tileentity.BaseTileEntity
@@ -14,7 +15,7 @@ import org.apache.commons.lang3.tuple.MutablePair
  */
 class TileEntityClipboard : BaseTileEntity() {
 
-	var tasks: MutableList<MutablePair<String, Boolean>> = mutableListOf()
+	var tasks: MutableList<Task> = mutableListOf()
 		private set
 
 	fun load(stack: ItemStack) {
@@ -26,8 +27,8 @@ class TileEntityClipboard : BaseTileEntity() {
 
 		tasks.forEach {
 			val task = NBTTagCompound()
-			task.setString("item", it.left)
-			task.setBoolean("state", it.right)
+			task.setString("task", it.task)
+			task.setBoolean("state", it.state)
 			list.appendTag(task)
 		}
 
@@ -48,7 +49,7 @@ class TileEntityClipboard : BaseTileEntity() {
 
 		list.forEach {
 			val task = it as NBTTagCompound
-			tasks.add(MutablePair.of(task.getString("item"), task.getBoolean("state")))
+			tasks.add(Task(task.getString("item"), task.getBoolean("state")))
 		}
 	}
 
