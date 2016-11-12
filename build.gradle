@@ -59,6 +59,9 @@ repositories {
 		name "progwml6"
 		url "http://dvs1.progwml6.com/files/maven/"
 	}
+	flatDir {
+		dirs "../ShadowMC/build/libs/"
+	}
 }
 
 dependencies {
