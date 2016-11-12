@@ -9,6 +9,7 @@ import net.shadowfacts.clipboard.gui.element.UITaskCheckbox
 import net.shadowfacts.clipboard.gui.element.UITaskTextField
 import net.shadowfacts.clipboard.util.*
 import net.shadowfacts.shadowmc.ui.UIDimensions
+import net.shadowfacts.shadowmc.ui.element.UILabel
 import net.shadowfacts.shadowmc.ui.element.button.UIButtonBase
 import net.shadowfacts.shadowmc.ui.element.button.UIImage
 import net.shadowfacts.shadowmc.ui.element.view.UIFixedView
@@ -51,6 +52,9 @@ object GUIClipboard {
 			stack.add(innerStack)
 		}
 
+		val pageIndicator = UILabel("", "page")
+		root.add(pageIndicator)
+
 		val updateUI = {
 			for (i in 0.until(9)) {
 				val taskId = clipboard.getPage() * 9 + i
@@ -80,6 +84,7 @@ object GUIClipboard {
 					update()
 				}
 			}
+			pageIndicator.setText((clipboard.getPage() + 1).toString())
 		}
 
 		updateUI()

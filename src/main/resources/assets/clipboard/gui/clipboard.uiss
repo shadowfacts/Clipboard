@@ -30,3 +30,10 @@ button-page {
 	horizontal-layout: right
 	margin-right: 46
 }
+
+#page {
+	vertical-layout: bottom
+	margin-bottom: 23
+	text-color: black
+	text-horizontal-layout: center
+}
