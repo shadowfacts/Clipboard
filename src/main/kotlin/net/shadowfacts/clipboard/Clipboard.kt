@@ -17,8 +17,7 @@ import net.shadowfacts.clipboard.network.PacketUpdateClipboard
 /**
  * @author shadowfacts
  */
-@Mod(modid = MOD_ID, name = NAME, version = VERSION, /*dependencies = "required-after:shadowmc@[3.5.0,);",*/ modLanguageAdapter = "net.shadowfacts.forgelin.KotlinAdapter")
-//TODO: reenable dep
+@Mod(modid = MOD_ID, name = NAME, version = VERSION, dependencies = "required-after:shadowmc@[3.5.0,);", modLanguageAdapter = "net.shadowfacts.forgelin.KotlinAdapter")
 object Clipboard {
 
 	var network: SimpleNetworkWrapper? = null
