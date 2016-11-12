@@ -65,4 +65,8 @@ class ItemClipboard : ItemBase("clipboard") {
 		return EnumActionResult.PASS
 	}
 
+	override fun shouldCauseReequipAnimation(oldStack: ItemStack, newStack: ItemStack?, slotChanged: Boolean): Boolean {
+		return !oldStack.isItemEqual(newStack)
+	}
+
 }
