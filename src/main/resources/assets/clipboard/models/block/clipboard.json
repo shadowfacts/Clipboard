@@ -1,6 +1,7 @@
 {
   "textures": {
-	"front": "clipboard:clipboard"
+	"clipboard": "clipboard:clipboard",
+	"particle": "clipboard:clipboard"
   },
   "elements": [
 	{
@@ -8,23 +9,24 @@
 	  "to": [13, 14, 1],
 	  "faces": {
 		"down": {
-		  "texture": "#side"
+		  "texture": "#clipboard",
+		  "uv": [3, 13, 13, 14]
 		},
 		"up": {
-		  "texture": "#side"
+		  "texture": "#clipboard",
+		  "uv": [3, 2, 13, 3]
 		},
 		"east": {
-		  "texture": "#side"
+		  "texture": "#clipboard",
+		  "uv": [3, 2, 4, 14]
 		},
 		"west": {
-		  "texture": "#side"
-		},
-		"north": {
-		  "texture": "#back",
-		  "cullface": "north"
+		  "texture": "#clipboard",
+		  "uv": [3, 2, 4, 14]
 		},
 		"south": {
-		  "texture": "#front"
+		  "texture": "#clipboard",
+		  "uv": [3, 2, 13, 14]
 		}
 	  }
 	}

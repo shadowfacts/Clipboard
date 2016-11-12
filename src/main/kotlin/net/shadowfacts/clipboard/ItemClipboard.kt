@@ -1,5 +1,6 @@
 package net.shadowfacts.clipboard
 
+import net.minecraft.block.SoundType
 import net.minecraft.client.Minecraft
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.player.EntityPlayer
@@ -12,6 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import net.shadowfacts.clipboard.block.TileEntityClipboard
 import net.shadowfacts.clipboard.gui.GUIClipboard
 import net.shadowfacts.clipboard.network.PacketUpdateClipboard
+import net.shadowfacts.clipboard.util.StackClipboard
 import net.shadowfacts.shadowmc.ShadowMC
 import net.shadowfacts.shadowmc.item.ItemBase
 
@@ -43,16 +45,22 @@ class ItemClipboard : ItemBase("clipboard") {
 		val synchronizer = {
 			Clipboard.network!!.sendToServer(PacketUpdateClipboard(stack, player, hand))
 		}
-		Minecraft.getMinecraft().displayGuiScreen(GUIClipboard.create(stack, synchronizer))
+		Minecraft.getMinecraft().displayGuiScreen(GUIClipboard.create(StackClipboard(stack), synchronizer))
 		player.swingArm(hand)
 	}
 
-	override fun onItemUse(stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): EnumActionResult {
+	override fun onItemUse(stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, hand: EnumHand, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): EnumActionResult {
 		if (player.isSneaking) {
-			world.setBlockState(pos.offset(facing), Clipboard.blockClipboard.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, getMetadata(stack), player, stack))
-			(world.getTileEntity(pos.offset(facing)) as TileEntityClipboard).load(stack)
-			player.setHeldItem(hand, null)
-			return EnumActionResult.SUCCESS
+			if (Clipboard.blockClipboard.canPlace(world, pos, side.opposite)) {
+				world.setBlockState(pos.offset(side), Clipboard.blockClipboard.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, getMetadata(stack), player, stack))
+				(world.getTileEntity(pos.offset(side)) as TileEntityClipboard).load(stack)
+				player.setHeldItem(hand, null)
+
+				val sound = SoundType.WOOD
+				world.playSound(player, pos.offset(side), sound.placeSound, SoundCategory.BLOCKS, (sound.volume + 1) / 2, sound.pitch * 0.8f)
+
+				return EnumActionResult.SUCCESS
+			}
 		}
 		return EnumActionResult.PASS
 	}

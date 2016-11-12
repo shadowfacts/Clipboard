@@ -4,25 +4,27 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
 import net.minecraftforge.common.util.Constants
+import net.shadowfacts.clipboard.util.Clipboard
 import net.shadowfacts.clipboard.util.Task
 import net.shadowfacts.clipboard.util.getTasks
 import net.shadowfacts.forgelin.extensions.forEach
+import net.shadowfacts.shadowmc.ShadowMC
+import net.shadowfacts.shadowmc.network.PacketRequestTEUpdate
 import net.shadowfacts.shadowmc.tileentity.BaseTileEntity
-import org.apache.commons.lang3.tuple.MutablePair
 
 /**
  * @author shadowfacts
  */
-class TileEntityClipboard : BaseTileEntity() {
+class TileEntityClipboard : BaseTileEntity(), Clipboard {
 
-	var tasks: MutableList<Task> = mutableListOf()
-		private set
+	private var tasks: MutableList<Task> = mutableListOf()
+	private var page: Int = 0
 
 	fun load(stack: ItemStack) {
 		tasks = stack.getTasks()
 	}
 
-	fun writeTasks(tag: NBTTagCompound): NBTTagCompound {
+	fun writeClipboard(tag: NBTTagCompound): NBTTagCompound {
 		val list = NBTTagList()
 
 		tasks.forEach {
@@ -33,24 +35,49 @@ class TileEntityClipboard : BaseTileEntity() {
 		}
 
 		tag.setTag("tasks", list)
+		tag.setInteger("page", page)
 
 		return tag
 	}
 
 	override fun writeToNBT(tag: NBTTagCompound): NBTTagCompound {
 		super.writeToNBT(tag)
-		return writeTasks(tag)
+		return writeClipboard(tag)
 	}
 
 	override fun readFromNBT(tag: NBTTagCompound) {
 		super.readFromNBT(tag)
 
+		tasks.clear()
 		val list = tag.getTagList("tasks", Constants.NBT.TAG_COMPOUND)
-
 		list.forEach {
 			val task = it as NBTTagCompound
-			tasks.add(Task(task.getString("item"), task.getBoolean("state")))
+			tasks.add(Task(task.getString("task"), task.getBoolean("state")))
 		}
+
+		page = tag.getInteger("page")
+	}
+
+	override fun onLoad() {
+		if (world.isRemote) {
+			ShadowMC.network.sendToServer(PacketRequestTEUpdate(this))
+		}
+	}
+
+	override fun getTasks(): MutableList<Task> {
+		return tasks
+	}
+
+	override fun setTasks(tasks: MutableList<Task>) {
+		this.tasks = tasks
+	}
+
+	override fun getPage(): Int {
+		return page
+	}
+
+	override fun setPage(page: Int) {
+		this.page = page
 	}
 
 }

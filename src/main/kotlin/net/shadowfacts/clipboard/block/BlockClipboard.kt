@@ -5,6 +5,7 @@ import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyDirection
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
+import net.minecraft.client.Minecraft
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
@@ -16,9 +17,14 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.RayTraceResult
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import net.shadowfacts.clipboard.Clipboard
+import net.shadowfacts.clipboard.gui.GUIClipboard
 import net.shadowfacts.clipboard.util.EntityItem
+import net.shadowfacts.shadowmc.ShadowMC
 import net.shadowfacts.shadowmc.block.BlockTE
+import net.shadowfacts.shadowmc.network.PacketUpdateTE
 
 /**
  * @author shadowfacts
@@ -56,17 +62,29 @@ class BlockClipboard : BlockTE<TileEntityClipboard>(Material.ROCK, "clipboard") 
 	}
 
 	override fun getStateForPlacement(world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, meta: Int, placer: EntityLivingBase, stack: ItemStack): IBlockState {
-		val facing = EnumFacing.getFacingFromVector(placer.posX.toFloat() - pos.x, 0f, placer.posZ.toFloat() - pos.z)
-		return defaultState.withProperty(FACING, facing)
+		return defaultState.withProperty(FACING, side)
 	}
 
-	override fun onBlockActivated(worldIn: World?, pos: BlockPos?, state: IBlockState?, playerIn: EntityPlayer?, hand: EnumHand?, heldItem: ItemStack?, side: EnumFacing?, hitX: Float, hitY: Float, hitZ: Float): Boolean {
-//		TODO: show GUI
-		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ)
+	override fun onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, hand: EnumHand, heldItem: ItemStack?, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
+		if (world.isRemote) {
+			openGUI(world, pos)
+		}
+		return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ)
+	}
+
+	@SideOnly(Side.CLIENT)
+	private fun openGUI(world: World, pos: BlockPos) {
+		val tile = getTileEntity(world, pos)
+		val synchronizer = {
+			ShadowMC.network.sendToServer(PacketUpdateTE(tile))
+		}
+		Minecraft.getMinecraft().displayGuiScreen(GUIClipboard.create(tile, synchronizer))
 	}
 
 	override fun getPickBlock(state: IBlockState, target: RayTraceResult, world: World, pos: BlockPos, player: EntityPlayer): ItemStack {
-		return ItemStack(Clipboard.clipboard)
+		val stack = ItemStack(Clipboard.clipboard)
+		stack.tagCompound = getTileEntity(world, pos).writeClipboard(NBTTagCompound())
+		return stack
 	}
 
 	override fun getDrops(world: IBlockAccess, pos: BlockPos, state: IBlockState, fortune: Int): MutableList<ItemStack> {
@@ -75,8 +93,7 @@ class BlockClipboard : BlockTE<TileEntityClipboard>(Material.ROCK, "clipboard") 
 
 	override fun breakBlock(world: World, pos: BlockPos, state: IBlockState) {
 		val stack = ItemStack(Clipboard.clipboard)
-		stack.tagCompound = NBTTagCompound()
-		getTileEntity(world, pos).writeTasks(stack.tagCompound!!)
+		stack.tagCompound = getTileEntity(world, pos).writeClipboard(NBTTagCompound())
 
 		val entity = EntityItem(world, pos.x, pos.y, pos.z, stack)
 		world.spawnEntityInWorld(entity)
@@ -103,6 +120,19 @@ class BlockClipboard : BlockTE<TileEntityClipboard>(Material.ROCK, "clipboard") 
 	@Deprecated("")
 	override fun isFullCube(state: IBlockState): Boolean {
 		return false
+	}
+
+	fun canPlace(world: World, pos: BlockPos, side: EnumFacing): Boolean {
+		return world.getBlockState(pos).isSideSolid(world, pos, side)
+	}
+
+	@Deprecated("")
+	override fun neighborChanged(state: IBlockState, world: World, pos: BlockPos, block: Block) {
+		val facing = state.getValue(FACING)
+		if (!canPlace(world, pos.offset(facing.opposite), facing)) {
+			dropBlockAsItem(world, pos, state, 0)
+			world.setBlockToAir(pos)
+		}
 	}
 
 }
