@@ -61,15 +61,15 @@ class BlockClipboard : BlockTE<TileEntityClipboard>(Material.ROCK, "clipboard") 
 		return defaultState.withProperty(FACING, EnumFacing.VALUES[meta])
 	}
 
-	override fun getStateForPlacement(world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, meta: Int, placer: EntityLivingBase, stack: ItemStack): IBlockState {
-		return defaultState.withProperty(FACING, side)
+	override fun getStateForPlacement(world: World, pos: BlockPos, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, meta: Int, placer: EntityLivingBase, hand: EnumHand): IBlockState {
+		return defaultState.withProperty(FACING, facing)
 	}
 
-	override fun onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, hand: EnumHand, heldItem: ItemStack?, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
+	override fun onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, hand: EnumHand, heldItem: EnumFacing, side: Float, hitX: Float, hitY: Float): Boolean {
 		if (world.isRemote) {
 			openGUI(world, pos)
 		}
-		return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ)
+		return true
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -96,7 +96,7 @@ class BlockClipboard : BlockTE<TileEntityClipboard>(Material.ROCK, "clipboard") 
 		stack.tagCompound = getTileEntity(world, pos).writeClipboard(NBTTagCompound())
 
 		val entity = EntityItem(world, pos.x, pos.y, pos.z, stack)
-		world.spawnEntityInWorld(entity)
+		world.spawnEntity(entity)
 
 		super.breakBlock(world, pos, state)
 	}
@@ -127,7 +127,7 @@ class BlockClipboard : BlockTE<TileEntityClipboard>(Material.ROCK, "clipboard") 
 	}
 
 	@Deprecated("")
-	override fun neighborChanged(state: IBlockState, world: World, pos: BlockPos, block: Block) {
+	override fun neighborChanged(state: IBlockState, world: World, pos: BlockPos, block: Block, newPos: BlockPos) {
 		val facing = state.getValue(FACING)
 		if (!canPlace(world, pos.offset(facing.opposite), facing)) {
 			dropBlockAsItem(world, pos, state, 0)

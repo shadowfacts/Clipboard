@@ -32,7 +32,8 @@ class ItemClipboard : ItemBase("clipboard") {
 		ShadowMC.proxy.registerItemModel(this, 0, ResourceLocation(MOD_ID, "clipboard"))
 	}
 
-	override fun onItemRightClick(stack: ItemStack, world: World, player: EntityPlayer, hand: EnumHand): ActionResult<ItemStack> {
+	override fun onItemRightClick(world: World, player: EntityPlayer, hand: EnumHand): ActionResult<ItemStack> {
+		val stack = player.getHeldItem(hand)
 		if (world.isRemote && !player.isSneaking) {
 			openGUI(stack, player, hand)
 			return ActionResult(EnumActionResult.SUCCESS, stack)
@@ -49,12 +50,13 @@ class ItemClipboard : ItemBase("clipboard") {
 		player.swingArm(hand)
 	}
 
-	override fun onItemUse(stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, hand: EnumHand, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): EnumActionResult {
+	override fun onItemUse(player: EntityPlayer, world: World, pos: BlockPos, hand: EnumHand, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): EnumActionResult {
 		if (player.isSneaking) {
+			val stack = player.getHeldItem(hand)
 			if (Clipboard.blockClipboard.canPlace(world, pos, side.opposite)) {
-				world.setBlockState(pos.offset(side), Clipboard.blockClipboard.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, getMetadata(stack), player, stack))
+				world.setBlockState(pos.offset(side), Clipboard.blockClipboard.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, getMetadata(stack), player, hand))
 				(world.getTileEntity(pos.offset(side)) as TileEntityClipboard).load(stack)
-				player.setHeldItem(hand, null)
+				player.setHeldItem(hand, ItemStack.EMPTY)
 
 				val sound = SoundType.WOOD
 				world.playSound(player, pos.offset(side), sound.placeSound, SoundCategory.BLOCKS, (sound.volume + 1) / 2, sound.pitch * 0.8f)
