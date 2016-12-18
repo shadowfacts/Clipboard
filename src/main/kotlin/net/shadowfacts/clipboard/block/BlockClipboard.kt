@@ -62,7 +62,15 @@ class BlockClipboard : BlockTE<TileEntityClipboard>(Material.ROCK, "clipboard") 
 	}
 
 	override fun getStateForPlacement(world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, meta: Int, placer: EntityLivingBase, stack: ItemStack): IBlockState {
-		return defaultState.withProperty(FACING, side)
+		return defaultState.withProperty(FACING, getDirection(pos, placer))
+	}
+
+	private fun getDirection(pos: BlockPos, entity: EntityLivingBase): EnumFacing {
+		return EnumFacing.getFacingFromVector(
+				entity.posX.toFloat() - pos.x,
+				0f,
+				entity.posZ.toFloat() - pos.z
+		)
 	}
 
 	override fun onBlockActivated(world: World, pos: BlockPos, state: IBlockState, player: EntityPlayer, hand: EnumHand, heldItem: ItemStack?, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
@@ -124,6 +132,15 @@ class BlockClipboard : BlockTE<TileEntityClipboard>(Material.ROCK, "clipboard") 
 
 	fun canPlace(world: World, pos: BlockPos, side: EnumFacing): Boolean {
 		return world.getBlockState(pos).isSideSolid(world, pos, side)
+	}
+
+	fun canPlace(world: World, pos: BlockPos, sideHit: EnumFacing, entity: EntityLivingBase): Boolean {
+		val facing = getDirection(pos, entity)
+		if (sideHit == EnumFacing.DOWN || sideHit == EnumFacing.UP) {
+			return canPlace(world, pos.offset(sideHit).offset(facing.opposite), facing)
+		} else {
+			return canPlace(world, pos, facing)
+		}
 	}
 
 	@Deprecated("")
