@@ -53,7 +53,7 @@ class ItemClipboard : ItemBase("clipboard") {
 	override fun onItemUse(player: EntityPlayer, world: World, pos: BlockPos, hand: EnumHand, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): EnumActionResult {
 		if (player.isSneaking) {
 			val stack = player.getHeldItem(hand)
-			if (Clipboard.blockClipboard.canPlace(world, pos, side.opposite)) {
+			if (Clipboard.blockClipboard.canPlace(world, pos, side, player)) {
 				world.setBlockState(pos.offset(side), Clipboard.blockClipboard.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, getMetadata(stack), player, hand))
 				(world.getTileEntity(pos.offset(side)) as TileEntityClipboard).load(stack)
 				player.setHeldItem(hand, ItemStack.EMPTY)
