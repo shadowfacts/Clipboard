@@ -21,11 +21,11 @@ object GUIClipboard {
 
 	val BG = ResourceLocation("clipboard", "textures/gui/clipboard.png")
 
-	fun create(clipboard: Clipboard, synchronize: () -> Unit): GuiScreen {
+	fun create(clipboard: Clipboard, synchronize: (tasks: List<Task>) -> Unit): GuiScreen {
 		val tasks = clipboard.getTasks()
 		val update = {
 			clipboard.setTasks(tasks)
-			synchronize()
+			synchronize(tasks)
 		}
 
 		return screen {

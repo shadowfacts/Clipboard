@@ -14,6 +14,7 @@ import net.shadowfacts.clipboard.block.TileEntityClipboard
 import net.shadowfacts.clipboard.gui.GUIClipboard
 import net.shadowfacts.clipboard.network.PacketUpdateClipboard
 import net.shadowfacts.clipboard.util.StackClipboard
+import net.shadowfacts.clipboard.util.Task
 import net.shadowfacts.shadowmc.ShadowMC
 import net.shadowfacts.shadowmc.item.ItemBase
 
@@ -43,8 +44,8 @@ class ItemClipboard : ItemBase("clipboard") {
 
 	@SideOnly(Side.CLIENT)
 	private fun openGUI(stack: ItemStack, player: EntityPlayer, hand: EnumHand) {
-		val synchronizer = {
-			Clipboard.network!!.sendToServer(PacketUpdateClipboard(stack, player, hand))
+		val synchronizer = { tasks: List<Task> ->
+			Clipboard.network!!.sendToServer(PacketUpdateClipboard(tasks, hand))
 		}
 		Minecraft.getMinecraft().displayGuiScreen(GUIClipboard.create(StackClipboard(stack), synchronizer))
 		player.swingArm(hand)

@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import net.shadowfacts.clipboard.Clipboard
 import net.shadowfacts.clipboard.gui.GUIClipboard
 import net.shadowfacts.clipboard.util.EntityItem
+import net.shadowfacts.clipboard.util.Task
 import net.shadowfacts.shadowmc.ShadowMC
 import net.shadowfacts.shadowmc.block.BlockTE
 import net.shadowfacts.shadowmc.network.PacketUpdateTE
@@ -83,7 +84,7 @@ class BlockClipboard : BlockTE<TileEntityClipboard>(Material.ROCK, "clipboard") 
 	@SideOnly(Side.CLIENT)
 	private fun openGUI(world: World, pos: BlockPos) {
 		val tile = getTileEntity(world, pos)
-		val synchronizer = {
+		val synchronizer = { tasks: List<Task> ->
 			ShadowMC.network.sendToServer(PacketUpdateTE(tile))
 		}
 		Minecraft.getMinecraft().displayGuiScreen(GUIClipboard.create(tile, synchronizer))
