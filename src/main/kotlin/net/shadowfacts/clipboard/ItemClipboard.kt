@@ -23,7 +23,6 @@ import net.shadowfacts.shadowmc.item.ItemBase
 class ItemClipboard : ItemBase("clipboard") {
 
 	init {
-		unlocalizedName = registryName.toString()
 		creativeTab = CreativeTabs.MISC
 		setMaxStackSize(1)
 	}

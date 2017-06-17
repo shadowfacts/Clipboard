@@ -1,0 +1,23 @@
+{
+  "type": "forge:ore_shapeless",
+  "ingredients": [
+	{
+	  "type": "forge:ore_dict",
+	  "ore": "dyeBlack"
+	},
+	{
+	  "type": "forge:ore_dict",
+	  "ore": "feather"
+	},
+	{
+	  "type": "forge:ore_dict",
+	  "ore": "paper"
+	},
+	{
+	  "item": "minecraft:wooden_pressure_plate"
+	}
+  ],
+  "result": {
+	"item": "clipboard:clipboard"
+  }
+}
