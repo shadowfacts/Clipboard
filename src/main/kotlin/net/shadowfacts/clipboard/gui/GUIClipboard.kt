@@ -22,9 +22,9 @@ object GUIClipboard {
 	val BG = ResourceLocation("clipboard", "textures/gui/clipboard.png")
 
 	fun create(clipboard: Clipboard, synchronize: () -> Unit): GuiScreen {
-		val tasks = clipboard.getTasks()
+		val tasks = clipboard.tasks
 		val update = {
-			clipboard.setTasks(tasks)
+			clipboard.tasks = tasks
 			synchronize()
 		}
 
@@ -61,13 +61,13 @@ object GUIClipboard {
 				}
 
 				val pageIndicator = label {
-					text = (clipboard.getPage() + 1).toString()
+					text = (clipboard.page + 1).toString()
 					id = "page"
 				}
 
 				val updateUI = {
 					for (i in 0.until(9)) {
-						val taskId = clipboard.getPage() * 9 + i
+						val taskId = clipboard.page * 9 + i
 						val (checkbox, textfield) = items[i]
 						checkbox.id = taskId
 						checkbox.state = if (taskId < tasks.size) tasks[taskId].state else false
@@ -94,14 +94,14 @@ object GUIClipboard {
 							update()
 						}
 					}
-					pageIndicator.setText((clipboard.getPage() + 1).toString())
+					pageIndicator.setText((clipboard.page + 1).toString())
 				}
 
 				updateUI()
 
 				val prevPage = object : UIButtonBase("button-page", "prev") {
 					init {
-						if (clipboard.getPage() == 0) {
+						if (clipboard.page == 0) {
 							enabled = false
 						}
 					}
@@ -110,9 +110,9 @@ object GUIClipboard {
 						UIHelper.drawTexturedRect(x, y, if (enabled) 26 else 3, 207, dimensions.width, dimensions.height)
 					}
 					override fun handlePress(mouseX: Int, mouseY: Int, button: MouseButton): Boolean {
-						clipboard.setPage(clipboard.getPage() - 1)
+						clipboard.page = clipboard.page - 1
 						updateUI()
-						if (clipboard.getPage() == 0) {
+						if (clipboard.page == 0) {
 							enabled = false
 						}
 						return true
@@ -128,9 +128,9 @@ object GUIClipboard {
 						UIHelper.drawTexturedRect(x, y, 26, 194, dimensions.width, dimensions.height)
 					}
 					override fun handlePress(mouseX: Int, mouseY: Int, button: MouseButton): Boolean {
-						clipboard.setPage(clipboard.getPage() + 1)
+						clipboard.page = clipboard.page + 1
 						updateUI()
-						if (clipboard.getPage() != 0) {
+						if (clipboard.page != 0) {
 							prevPage.setEnabled(true)
 						}
 						return true

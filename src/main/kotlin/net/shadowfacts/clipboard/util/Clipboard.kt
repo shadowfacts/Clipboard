@@ -5,12 +5,8 @@ package net.shadowfacts.clipboard.util
  */
 interface Clipboard {
 
-	fun getTasks(): MutableList<Task>
+	var tasks: MutableList<Task>
 
-	fun setTasks(tasks: MutableList<Task>)
-
-	fun getPage(): Int
-
-	fun setPage(page: Int)
+	var page: Int
 
 }

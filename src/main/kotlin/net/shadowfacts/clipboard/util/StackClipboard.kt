@@ -7,20 +7,12 @@ import net.minecraft.item.ItemStack
  */
 class StackClipboard(val stack: ItemStack) : Clipboard {
 
-	override fun getTasks(): MutableList<Task> {
-		return stack.getTasks()
-	}
+	override var tasks
+		get() = stack.getTasks()
+		set(value) { stack.setTasks(value) }
 
-	override fun setTasks(tasks: MutableList<Task>) {
-		stack.setTasks(tasks)
-	}
-
-	override fun getPage(): Int {
-		return stack.getPage()
-	}
-
-	override fun setPage(page: Int) {
-		stack.setPage(page)
-	}
+	override var page
+		get() = stack.getPage()
+		set(value) { stack.setPage(value) }
 
 }

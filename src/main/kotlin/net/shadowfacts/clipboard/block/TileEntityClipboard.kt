@@ -11,14 +11,19 @@ import net.shadowfacts.forgelin.extensions.forEach
 import net.shadowfacts.shadowmc.ShadowMC
 import net.shadowfacts.shadowmc.network.PacketRequestTEUpdate
 import net.shadowfacts.shadowmc.tileentity.BaseTileEntity
+import kotlin.properties.Delegates
 
 /**
  * @author shadowfacts
  */
 class TileEntityClipboard : BaseTileEntity(), Clipboard {
 
-	private var tasks: MutableList<Task> = mutableListOf()
-	private var page: Int = 0
+	override var tasks by Delegates.observable(mutableListOf<Task>()) { _, _, _ ->
+		markDirty()
+	}
+	override var page by Delegates.observable(0) { _, _, _ ->
+		markDirty()
+	}
 
 	fun load(stack: ItemStack) {
 		tasks = stack.getTasks()
@@ -62,22 +67,6 @@ class TileEntityClipboard : BaseTileEntity(), Clipboard {
 		if (world.isRemote) {
 			ShadowMC.network.sendToServer(PacketRequestTEUpdate(this))
 		}
-	}
-
-	override fun getTasks(): MutableList<Task> {
-		return tasks
-	}
-
-	override fun setTasks(tasks: MutableList<Task>) {
-		this.tasks = tasks
-	}
-
-	override fun getPage(): Int {
-		return page
-	}
-
-	override fun setPage(page: Int) {
-		this.page = page
 	}
 
 }
