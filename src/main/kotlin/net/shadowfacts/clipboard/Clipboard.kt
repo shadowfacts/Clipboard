@@ -36,12 +36,6 @@ object Clipboard {
 		network.registerMessage(PacketUpdateClipboardBlock.Handler::class.java, PacketUpdateClipboardBlock::class.java, 1, Side.SERVER)
 	}
 
-	@Mod.EventHandler
-	@SideOnly(Side.CLIENT)
-	fun preInitClient(event: FMLPreInitializationEvent) {
-		clipboard.initItemModel()
-	}
-
 	@Mod.EventBusSubscriber
 	object EventHandler {
 
@@ -56,6 +50,12 @@ object Clipboard {
 		@SubscribeEvent
 		fun registerItems(event: RegistryEvent.Register<Item>) {
 			event.registry.register(clipboard)
+		}
+		
+		@JvmStatic
+		@SubscribeEvent
+		fun registerModels(event: ModelRegistryEvent) {
+			clipboard.initItemModel()
 		}
 
 	}
